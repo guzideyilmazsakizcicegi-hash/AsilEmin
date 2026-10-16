@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Asil Emin: Süper Ayı Kötü Arı Kraliçesi & Aydınlık Yeşilçam Koşucusu!</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Luckiest+Guy&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky-blue: #38bdf8;
+      --sky-light: #e0f2fe;
+      --sun-gold: #f59e0b;
+      --sun-yellow: #fde047;
+      --grass-green: #22c55e;
+      --evil-purple: #9333ea;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: radial-gradient(circle at top, #7dd3fc 0%, #38bdf8 40%, #bae6fd 75%, #fef08a 100%);
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      overflow-x: hidden;
+    }
+
+    .game-shell {
+      width: 100%;
+      max-width: 940px;
+      background: #ffffff;
+      border: 6px solid #0284c7;
+      border-radius: 24px;
+      box-shadow: 0 15px 40px rgba(2, 132, 199, 0.25), 0 0 35px rgba(56, 189, 248, 0.4);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .hud-bar {
+      background: linear-gradient(90deg, #0284c7 0%, #0ea5e9 40%, #38bdf8 100%);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      border-bottom: 4px solid #0369a1;
+      text-shadow: 1px 2px 2px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    .hero-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-avatar-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid #fde047;
+      overflow: hidden;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      background: #fff;
+      flex-shrink: 0;
+    }
+    .hero-avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+    .hero-title h2 { font-size: 1.15rem; font-weight: 800; color: #fff; }
+    .hero-title p { font-size: 0.8rem; color: #fef08a; font-weight: 700; }
+
+    .hud-stats { display: flex; align-items: center; gap: 10px; }
+    .hud-pill {
+      background: rgba(0,0,0,0.25);
+      border: 2px solid rgba(255,255,255,0.6);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sound-btn {
+      background: white;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0284c7;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #38bdf8;
+      overflow: hidden;
+    }
+    #gameCanvas { width: 100%; height: 100%; display: block; }
+
+    .game-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(240, 249, 255, 0.94);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      z-index: 50;
+    }
+    .game-overlay.hidden { display: none; }
+
+    .hero-banner-thumb {
+      max-width: 440px;
+      width: 85%;
+      border-radius: 18px;
+      border: 4px solid #0284c7;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.35);
+      margin-bottom: 12px;
+    }
+
+    .game-main-title {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 2.1rem;
+      color: #0369a1;
+      text-shadow: 2px 2px 0 #bae6fd;
+      margin-bottom: 6px;
+    }
+
+    .game-main-sub {
+      font-size: 1.05rem;
+      color: #334155;
+      max-width: 620px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .btn-start {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 1.5rem;
+      background: linear-gradient(180deg, #ea580c 0%, #c2410c 100%);
+      color: white;
+      border: none;
+      padding: 14px 44px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #7c2d12;
+      letter-spacing: 1px;
+    }
+    .btn-start:active { transform: translateY(4px); box-shadow: 0 2px 0 #7c2d12; }
+
+    .runner-prank-banner {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #78350f;
+      border: 3px solid #fef08a;
+      border-radius: 30px;
+      padding: 10px 24px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      display: none;
+      z-index: 40;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
+
+    /* Boss HUD Bar */
+    .runner-boss-hud {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(59, 7, 100, 0.95);
+      border: 3px solid #c084fc;
+      border-radius: 20px;
+      padding: 8px 20px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      z-index: 45;
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.7);
+    }
+    .runner-boss-title {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 1.05rem;
+      color: #f5d0fe;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .runner-boss-track {
+      width: 260px;
+      max-width: 70vw;
+      height: 12px;
+      background: #2e1065;
+      border: 2px solid #c084fc;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .runner-boss-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #9333ea, #ec4899);
+      transition: width 0.3s ease;
+    }
+
+    /* Progress Bar */
+    .runner-progress-container {
+      width: 100%;
+      height: 9px;
+      background: #bae6fd;
+      position: relative;
+    }
+    .runner-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f59e0b, #22c55e);
+      transition: width 0.1s linear;
+    }
+
+    /* Modal with Jokers */
+    .checkpoint-modal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      border: 6px solid #0284c7;
+      border-radius: 24px;
+      padding: 18px 20px;
+      width: 92%;
+      max-width: 660px;
+      box-shadow: 0 20px 60px rgba(2, 132, 199, 0.45);
+      text-align: center;
+      color: #0f172a;
+      z-index: 100;
+      display: none;
+      max-height: 94vh;
+      overflow-y: auto;
+    }
+
+    .cp-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .cp-timer {
+      background: #0284c7;
+      color: #fff;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .cp-score-badge {
+      background: #fef08a;
+      border: 2px solid #eab308;
+      color: #854d0e;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+
+    .cp-diff-badge {
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+    }
+    .cp-diff-badge.orta { background: #fef08a; color: #854d0e; border: 2px solid #ca8a04; }
+    .cp-diff-badge.zor { background: #fee2e2; color: #991b1b; border: 2px solid #dc2626; }
+
+    /* 2D AÇINIM GÖRÜNTÜLEYİCİ PANELİ (RUNNER) */
+    .cp-net-card {
+      background: #f8fafc;
+      border: 2px solid #0284c7;
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+    }
+    .cp-net-badge {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cp-net-content {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .cp-net-svg-box {
+      width: 170px;
+      height: 110px;
+      background: #f0f9ff;
+      border: 1px dashed #7dd3fc;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .cp-net-svg-box svg { width: 100%; height: 100%; display: block; }
+    .cp-net-info { flex: 1; min-width: 180px; }
+    .cp-net-info h4 { font-size: 0.98rem; color: #0369a1; font-weight: 800; margin-bottom: 3px; }
+    .cp-net-info p { font-size: 0.82rem; color: #475569; font-weight: 600; line-height: 1.35; margin-bottom: 6px; }
+    .cp-net-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+    .cp-net-tag {
+      background: #e0f2fe;
+      border: 1px solid #7dd3fc;
+      color: #0369a1;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .cp-question-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 12px;
+      line-height: 1.4;
+      text-align: left;
+      background: #f0f9ff;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 2px solid #bae6fd;
+    }
+
+    .cp-options-grid { display: grid; gap: 8px; margin-bottom: 12px; }
+    .cp-opt-btn {
+      background: #f0f9ff;
+      border: 3px solid #38bdf8;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0369a1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+    .cp-opt-btn:hover { background: #e0f2fe; border-color: #0284c7; transform: translateX(3px); }
+
+    /* Joker Container */
+    .cp-joker-container {
+      background: linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%);
+      border: 2px dashed #c084fc;
+      border-radius: 16px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .joker-bar-label {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #7e22ce;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .joker-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .joker-action-btn {
+      background: #ffffff;
+      border: 2px solid #a855f7;
+      border-radius: 12px;
+      padding: 6px 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .joker-action-btn:hover { background: #fdf4ff; transform: translateY(-2px); }
+    .joker-action-btn:active { transform: translateY(1px); }
+    .joker-action-btn strong { font-size: 0.8rem; color: #6b21a8; line-height: 1.2; }
+    .joker-action-btn small { font-size: 0.72rem; color: #9333ea; font-weight: 700; margin-top: 2px; }
+    .joker-action-btn.golden { border-color: #eab308; background: #fefce8; }
+    .joker-action-btn.golden strong { color: #854d0e; }
+    .joker-action-btn.golden small { color: #a16207; }
+
+    .joker-status-msg {
+      font-size: 0.84rem;
+      font-weight: 800;
+      margin-top: 8px;
+      display: none;
+      padding: 7px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.95);
+      border: 2px solid #c084fc;
+      line-height: 1.35;
+    }
+
+    /* Wrong Answer Alert / Recovery Box */
+    .cp-wrong-box {
+      background: #fff1f2;
+      border: 3px solid #f43f5e;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
+      text-align: left;
+      animation: shake 0.3s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    .wrong-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .wrong-header span { font-size: 1.8rem; }
+    .wrong-header strong { font-size: 0.95rem; color: #be123c; }
+    .wrong-header p { font-size: 0.83rem; color: #475569; margin-top: 2px; }
+    .wrong-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .wrong-joker-btn {
+      background: #7e22ce;
+      color: white;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.83rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .wrong-joker-btn:hover { background: #6b21a8; }
+    .wrong-joker-btn.gold {
+      background: #d97706;
+    }
+    .wrong-joker-btn.gold:hover { background: #b45309; }
+    .wrong-retry-btn {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.83rem;
+      cursor: pointer;
+    }
+    .wrong-retry-btn:hover { background: #e2e8f0; }
+
+    .cp-feedback-banner {
+      padding: 10px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: none;
+    }
+    .cp-feedback-banner.correct { background: #dcfce7; color: #15803d; border: 2px solid #22c55e; display: block; }
+    .cp-feedback-banner.wrong { background: #fee2e2; color: #b91c1c; border: 2px solid #ef4444; display: block; }
+
+    .controls-bar {
+      background: #0369a1;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 4px solid #0284c7;
+    }
+
+    .controls-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .act-btn {
+      font-family: 'Luckiest Guy', cursive;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .act-btn.up { background: #0284c7; }
+    .act-btn.down { background: #0369a1; }
+    .act-btn.jump { background: #f59e0b; }
+    .act-btn.prank { background: #ec4899; box-shadow: 0 5px 0 #be185d; }
+    .act-btn:active { transform: translateY(3px); }
+  </style>
+</head>
+<body>
+
+  <div class="game-shell">
+    <header class="hud-bar">
+      <div class="hero-profile">
+        <div class="hero-avatar-circle">
+          <img src="hero_avatar.jpg" alt="Asil Emin">
+        </div>
+        <div class="hero-title">
+          <h2>Asil Emin Sakızçiçeği</h2>
+          <p>Yeşilçam Mahalle Koşucusu & Badi Steve! 🎬☀️</p>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="hud-pill">💧 <span id="hudDrops">0</span></div>
+        <div class="hud-pill">🏁 <span id="hudDistance">0</span> / 1000m</div>
+        <div class="hud-pill" style="color:#fde047; font-weight:900;">⭐ <span id="hudScore">0</span></div>
+        <div class="hud-pill" style="background:#6b21a8; color:#f5d0fe; border-color:#c084fc;">🃏 <span id="hudJokers">0</span> Joker</div>
+        <button class="sound-btn" id="soundToggle">🔊</button>
+      </div>
+    </header>
+
+    <!-- TRACK PROGRESS BAR -->
+    <div class="runner-progress-container">
+      <div class="runner-progress-bar" id="runnerProgressBar"></div>
+    </div>
+
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="860" height="480"></canvas>
+
+      <div class="runner-prank-banner" id="runnerPrankBanner">
+        🎉 YAŞASIN! Asil Emin neşeli şenlik balonlarını uçurdu! Badi Steve: "Harikasın Asil Emin!" 🎈✨
+      </div>
+
+      <!-- BOSS HUD -->
+      <div class="runner-boss-hud" id="runnerBossHud">
+        <div class="runner-boss-title">👑 SÜPER AYI: ARI KRALİÇESİ & BÜYÜLÜ PETEK! 🐝</div>
+        <div class="runner-boss-track">
+          <div class="runner-boss-fill" id="runnerBossFill"></div>
+        </div>
+      </div>
+
+      <!-- START OVERLAY -->
+      <div class="game-overlay" id="startOverlay">
+        <img class="hero-banner-thumb" src="evil_queen_bright_cover.jpg" alt="Asil Emin ve Arı Kraliçesi">
+        <h1 class="game-main-title">SÜPER AYI ARI KRALİÇESİ & AYDINLIK DÜELLO!</h1>
+        <p class="game-main-sub">
+          ☀️ <strong>1000 METRELİK BÜYÜK AYDINLIK SOKAK KOŞUSU!</strong><br>
+          ⭐ Yıldızları, damlaları, altın balları ve taze meyveleri topla, bol bol puan kazan!<br>
+          🃏 <strong>YENİ:</strong> Sorularda takılırsan topladığın puanlarla <strong>JOKER</strong> kullan ve şıkları ele!
+        </p>
+        <button class="btn-start" id="startRaceBtn">
+          ☀️ AYDINLIK KOŞUYU BAŞLAT! (OYNA)
+        </button>
+      </div>
+
+      <!-- CHECKPOINT MODAL -->
+      <div class="checkpoint-modal" id="checkpointModal">
+        <div class="cp-top-bar">
+          <div class="cp-timer" id="cpTimer">💡 RAHATÇA DÜŞÜN, ACELE ETME!</div>
+          <div class="cp-diff-badge orta" id="cpDiffBadge">🟡 ORTA SEVİYE</div>
+          <div class="cp-score-badge">⭐ Puanın: <strong id="cpModalScore">0</strong> (🃏 <strong id="cpModalJokers">0</strong> Joker Hazır)</div>
+        </div>
+
+        <!-- 2D AÇINIM GÖRÜNTÜLEYİCİ -->
+        <div class="cp-net-card" id="cpNetCard">
+          <div class="cp-net-badge">📐 3D CİSİM VE 2D YÜZEY AÇINIMI (AÇILMIŞ MODELİ)</div>
+          <div class="cp-net-content">
+            <div class="cp-net-svg-box" id="cpNetSvgBox"></div>
+            <div class="cp-net-info">
+              <h4 id="cpNetTitle">Şekil Açınımı</h4>
+              <p id="cpNetDesc">Yüzey özellikleri</p>
+              <div class="cp-net-tags" id="cpNetTags"></div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="cp-question-title" id="cpQuestion">Soru...</h3>
+        <div class="cp-options-grid" id="cpOptions"></div>
+
+        <!-- JOKER BAR -->
+        <div class="cp-joker-container">
+          <div class="joker-bar-label">⚡ ASİL EMİN'İN SÜPER JOKERLERİ (Puanlarını Kullan):</div>
+          <div class="joker-btn-grid">
+            <button class="joker-action-btn" id="btnJoker5050" onclick="useJoker('5050')">
+              <span style="font-size:1.2rem;">🃏</span>
+              <strong>1 Şıkkı Ele</strong>
+              <small>-30 ⭐ Puan</small>
+            </button>
+            <button class="joker-action-btn" id="btnJokerHint" onclick="useJoker('hint')">
+              <span style="font-size:1.2rem;">💡</span>
+              <strong>Süper Ayı İpucu</strong>
+              <small>-40 ⭐ Puan</small>
+            </button>
+            <button class="joker-action-btn golden" id="btnJokerPass" onclick="useJoker('pass')">
+              <span style="font-size:1.2rem;">🌟</span>
+              <strong>Doğruyu Aç & Geç</strong>
+              <small>-60 ⭐ Puan</small>
+            </button>
+          </div>
+          <div class="joker-status-msg" id="jokerStatusMsg"></div>
+        </div>
+
+        <!-- WRONG ANSWER RECOVERY BOX -->
+        <div class="cp-wrong-box" id="cpWrongBox" style="display:none;">
+          <div class="wrong-header">
+            <span>😅</span>
+            <div>
+              <strong>Hay aksi, bu şık tam doğru olmadı Asil Emin!</strong>
+              <p>Hiç dert etme! Koşuda topladığın puanlarla hemen joker kullanabilirsin:</p>
+            </div>
+          </div>
+          <div class="wrong-actions">
+            <button class="wrong-joker-btn" onclick="useJoker('5050')">🃏 1 Yanlış Şıkkı Ele (-30 ⭐)</button>
+            <button class="wrong-joker-btn gold" onclick="useJoker('pass')">🌟 Doğruyu Öğren ve Geç (-60 ⭐)</button>
+            <button class="wrong-retry-btn" onclick="retryQuestion()">🔄 Puan Harcamadan Tekrar Düşün</button>
+          </div>
+        </div>
+
+        <div class="cp-feedback-banner" id="cpFeedback"></div>
+      </div>
+
+      <!-- VICTORY MODAL -->
+      <div class="game-overlay hidden" id="victoryOverlay">
+        <div style="background:#ffffff; border:6px solid #0284c7; border-radius:24px; padding:24px; max-width:640px; color:#0f172a; text-align:center; box-shadow:0 20px 50px rgba(2,132,199,0.3);">
+          <div style="font-size:3.5rem;">☀️🏆👑🐝🍯✨</div>
+          <h1 style="font-family:'Luckiest Guy'; color:#0369a1; font-size:2.2rem; margin:8px 0;">1000m AYDINLIK DÜNYA ŞAMPİYONU!</h1>
+          <p style="font-size:1.05rem; line-height:1.5; margin-bottom:14px; color:#334155;">
+            <strong>ASİL EMİN SAKIZÇİÇEĞİ</strong>, 1000 metrelik güneşli sokak parkurunun tamamını başarıyla koştu, topladığı puanlar ve kurtarıcı jokerleriyle <strong>Süper Ayı'nın Arı Kraliçesi'nin</strong> tüm bilmecelerini çözdü! Büyülü mor kovanlar pırıl pırıl tatlı altın bala dönüştü.
+          </p>
+          <div style="background:#f0f9ff; border:2px solid #bae6fd; border-radius:16px; padding:12px; margin-bottom:16px; display:flex; justify-content:space-around; font-weight:800; color:#0369a1; flex-wrap:wrap; gap:8px;">
+            <div>🏁 Koşu: <strong>1000m</strong></div>
+            <div>⭐ Puan: <strong id="vicScore">0</strong></div>
+            <div>💧 Damla: <strong id="vicDrops">0</strong></div>
+            <div>🃏 Kullanılan Joker: <strong id="vicJokers">0</strong></div>
+          </div>
+          <div style="display:flex; gap:12px; justify-content:center;">
+            <button class="btn-start" style="padding:10px 24px; font-size:1.15rem; background:#0284c7;" onclick="window.print()">🖨️ Sertifikayı Yazdır</button>
+            <button class="btn-start" style="padding:10px 24px; font-size:1.15rem; background:#16a34a;" onclick="location.reload()">🔄 Yeniden Oyna</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <div style="font-size:0.85rem; color:#fde68a; font-weight:700;">
+        <kbd>W</kbd>/<kbd>S</kbd> Şerit | <kbd>SPACE</kbd> Zıpla | <kbd>Q</kbd> Şenlik Coşkusu!
+      </div>
+      <div class="controls-buttons">
+        <button class="act-btn up" id="btnUpLane">⬆️ ÜST</button>
+        <button class="act-btn jump" id="btnJump">🦘 ZIPLA</button>
+        <button class="act-btn down" id="btnDownLane">⬇️ ALT</button>
+        <button class="act-btn prank" id="btnPrank" style="background:#059669; box-shadow:0 5px 0 #047857;">🎉 ŞENLİK BAŞLAT!</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class YesilcamAudio {
+      constructor() { this.ctx = null; this.enabled = true; }
+      init() {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AC();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playHababam() {
+        if (!this.enabled) return;
+        this.init();
+        const notes = [
+          { f: 440, d: 0.15, t: 0 }, { f: 587, d: 0.2, t: 150 },
+          { f: 740, d: 0.2, t: 350 }, { f: 784, d: 0.25, t: 550 },
+          { f: 659, d: 0.2, t: 800 }, { f: 554, d: 0.2, t: 1000 },
+          { f: 587, d: 0.45, t: 1200 }
+        ];
+        notes.forEach(n => {
+          setTimeout(() => {
+            const o = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(n.f, this.ctx.currentTime);
+            g.gain.setValueAtTime(0.25, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + n.d);
+            o.connect(g); g.connect(this.ctx.destination);
+            o.start(); o.stop(this.ctx.currentTime + n.d);
+          }, n.t);
+        });
+      }
+      beep(freq, dur = 0.1) {
+        if (!this.enabled) return;
+        this.init();
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        g.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + dur);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + dur);
+      }
+      fıss() {
+        if (!this.enabled) return;
+        this.init();
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(320, this.ctx.currentTime);
+        o.frequency.linearRampToValueAtTime(800, this.ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.35);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.35);
+      }
+      monsterRoar() {
+        if (!this.enabled) return;
+        this.init();
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(90, this.ctx.currentTime);
+        o.frequency.linearRampToValueAtTime(35, this.ctx.currentTime + 0.7);
+        g.gain.setValueAtTime(0.45, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.7);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.7);
+      }
+      bossHit() {
+        if (!this.enabled) return;
+        this.init();
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'square';
+        o.frequency.setValueAtTime(140, this.ctx.currentTime);
+        o.frequency.linearRampToValueAtTime(50, this.ctx.currentTime + 0.25);
+        g.gain.setValueAtTime(0.4, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.25);
+      }
+      queenBeeBuzz() {
+        if (!this.enabled) return;
+        this.init();
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(220, this.ctx.currentTime);
+        o.frequency.linearRampToValueAtTime(340, this.ctx.currentTime + 0.15);
+        o.frequency.linearRampToValueAtTime(260, this.ctx.currentTime + 0.35);
+        o.frequency.linearRampToValueAtTime(360, this.ctx.currentTime + 0.6);
+        g.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.7);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.7);
+      }
+      coinChime(step = 0) {
+        if (!this.enabled) return;
+        this.init();
+        const freqs = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        const f = freqs[Math.min(step, freqs.length - 1)];
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(f, this.ctx.currentTime);
+        g.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.18);
+      }
+      jokerFanfare() {
+        if (!this.enabled) return;
+        this.init();
+        const notes = [587.33, 739.99, 880, 1174.66];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            const o = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            g.gain.setValueAtTime(0.22, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+            o.connect(g); g.connect(this.ctx.destination);
+            o.start(); o.stop(this.ctx.currentTime + 0.25);
+          }, idx * 70);
+        });
+      }
+      wrongOops() {
+        if (!this.enabled) return;
+        this.init();
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(260, this.ctx.currentTime);
+        o.frequency.linearRampToValueAtTime(140, this.ctx.currentTime + 0.3);
+        g.gain.setValueAtTime(0.22, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.3);
+      }
+      magnetSound() {
+        if (!this.enabled) return;
+        this.init();
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(440, this.ctx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.35);
+        g.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.35);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.35);
+      }
+      splashSound() {
+        if (!this.enabled) return;
+        this.init();
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(320, this.ctx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+        o.connect(g); g.connect(this.ctx.destination);
+        o.start(); o.stop(this.ctx.currentTime + 0.2);
+      }
+    }
+
+    const sound = new YesilcamAudio();
+
+    // SVG 2D Açınım Üreteci (Nets)
+    function getShapeNetSvg(type) {
+      if (type === 'cube') {
+        return `<svg viewBox="0 0 180 120" xmlns="http://www.w3.org/2000/svg">
+          <rect x="68" y="4" width="28" height="28" rx="2" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+          <text x="82" y="21" font-size="7.5" font-weight="bold" fill="#854d0e" text-anchor="middle">KARE 1</text>
+          <rect x="12" y="34" width="28" height="28" rx="2" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+          <text x="26" y="51" font-size="7.5" font-weight="bold" fill="#854d0e" text-anchor="middle">KARE 2</text>
+          <rect x="40" y="34" width="28" height="28" rx="2" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+          <text x="54" y="51" font-size="7.5" font-weight="bold" fill="#854d0e" text-anchor="middle">KARE 3</text>
+          <rect x="68" y="34" width="28" height="28" rx="2" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+          <text x="82" y="51" font-size="7.5" font-weight="bold" fill="#854d0e" text-anchor="middle">KARE 4</text>
+          <rect x="96" y="34" width="28" height="28" rx="2" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+          <text x="110" y="51" font-size="7.5" font-weight="bold" fill="#854d0e" text-anchor="middle">KARE 5</text>
+          <rect x="68" y="64" width="28" height="28" rx="2" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+          <text x="82" y="81" font-size="7.5" font-weight="bold" fill="#854d0e" text-anchor="middle">KARE 6</text>
+          <text x="82" y="108" font-size="8.5" font-weight="bold" fill="#ca8a04" text-anchor="middle">6 Eş Karesel Yüz</text>
+        </svg>`;
+      } else if (type === 'square_prism') {
+        return `<svg viewBox="0 0 180 125" xmlns="http://www.w3.org/2000/svg">
+          <rect x="68" y="4" width="26" height="26" rx="2" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+          <text x="81" y="20" font-size="7" font-weight="bold" fill="#9a3412" text-anchor="middle">KARE</text>
+          <rect x="16" y="32" width="26" height="54" rx="2" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <text x="29" y="62" font-size="7" font-weight="bold" fill="#0369a1" text-anchor="middle">YAN 1</text>
+          <rect x="42" y="32" width="26" height="54" rx="2" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <text x="55" y="62" font-size="7" font-weight="bold" fill="#0369a1" text-anchor="middle">YAN 2</text>
+          <rect x="68" y="32" width="26" height="54" rx="2" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+          <text x="81" y="62" font-size="7" font-weight="bold" fill="#0369a1" text-anchor="middle">YAN 3</text>
+          <rect x="94" y="32" width="26" height="54" rx="2" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <text x="107" y="62" font-size="7" font-weight="bold" fill="#0369a1" text-anchor="middle">YAN 4</text>
+          <rect x="68" y="88" width="26" height="26" rx="2" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+          <text x="81" y="104" font-size="7" font-weight="bold" fill="#9a3412" text-anchor="middle">KARE</text>
+          <text x="145" y="65" font-size="8" font-weight="bold" fill="#0284c7" text-anchor="middle">4 Dikdörtgen</text>
+        </svg>`;
+      } else if (type === 'rect_prism') {
+        return `<svg viewBox="0 0 180 125" xmlns="http://www.w3.org/2000/svg">
+          <rect x="52" y="4" width="36" height="22" rx="2" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+          <text x="70" y="18" font-size="7" font-weight="bold" fill="#854d0e" text-anchor="middle">TABAN</text>
+          <rect x="8" y="28" width="20" height="56" rx="2" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/>
+          <text x="18" y="58" font-size="6.5" font-weight="bold" fill="#15803d" text-anchor="middle">YAN 1</text>
+          <rect x="28" y="28" width="36" height="56" rx="2" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+          <text x="46" y="58" font-size="7" font-weight="bold" fill="#9a3412" text-anchor="middle">ÖN YÜZ</text>
+          <rect x="64" y="28" width="20" height="56" rx="2" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/>
+          <text x="74" y="58" font-size="6.5" font-weight="bold" fill="#15803d" text-anchor="middle">YAN 2</text>
+          <rect x="84" y="28" width="36" height="56" rx="2" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+          <text x="102" y="58" font-size="7" font-weight="bold" fill="#9a3412" text-anchor="middle">ARKA</text>
+          <rect x="52" y="86" width="36" height="22" rx="2" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+          <text x="70" y="100" font-size="7" font-weight="bold" fill="#854d0e" text-anchor="middle">TABAN</text>
+          <text x="145" y="62" font-size="8" font-weight="bold" fill="#ea580c" text-anchor="middle">6 Dikdörtgen</text>
+        </svg>`;
+      } else if (type === 'tri_prism') {
+        return `<svg viewBox="0 0 180 125" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="68,6 48,28 88,28" fill="#a7f3d0" stroke="#059669" stroke-width="2"/>
+          <text x="68" y="22" font-size="7" font-weight="bold" fill="#047857" text-anchor="middle">ÜÇGEN</text>
+          <rect x="16" y="30" width="30" height="54" rx="2" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <text x="31" y="60" font-size="6.5" font-weight="bold" fill="#0369a1" text-anchor="middle">DİKDÖRT.</text>
+          <rect x="48" y="30" width="40" height="54" rx="2" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+          <text x="68" y="60" font-size="7" font-weight="bold" fill="#0369a1" text-anchor="middle">DİKDÖRTGEN</text>
+          <rect x="90" y="30" width="30" height="54" rx="2" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <text x="105" y="60" font-size="6.5" font-weight="bold" fill="#0369a1" text-anchor="middle">DİKDÖRT.</text>
+          <polygon points="48,86 88,86 68,108" fill="#a7f3d0" stroke="#059669" stroke-width="2"/>
+          <text x="68" y="98" font-size="7" font-weight="bold" fill="#047857" text-anchor="middle">ÜÇGEN</text>
+          <text x="145" y="62" font-size="7.5" font-weight="bold" fill="#059669" text-anchor="middle">2 Üçgen + 3 Dikd.</text>
+        </svg>`;
+      } else if (type === 'cylinder') {
+        return `<svg viewBox="0 0 180 125" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="85" cy="18" r="14" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+          <text x="85" y="21" font-size="6.5" font-weight="bold" fill="#854d0e" text-anchor="middle">DAİRE</text>
+          <rect x="20" y="34" width="130" height="50" rx="3" fill="#a5f3fc" stroke="#0891b2" stroke-width="2"/>
+          <text x="85" y="62" font-size="8" font-weight="bold" fill="#0e7490" text-anchor="middle">AÇILMIŞ DİKDÖRTGEN YÜZEY</text>
+          <circle cx="85" cy="100" r="14" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+          <text x="85" y="103" font-size="6.5" font-weight="bold" fill="#854d0e" text-anchor="middle">DAİRE</text>
+        </svg>`;
+      } else if (type === 'liquid_cups') {
+        return `<svg viewBox="0 0 180 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="10" width="164" height="90" rx="8" fill="#f0f9ff" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="18" y="42" font-size="18">🍵</text>
+          <text x="20" y="64" font-size="7" font-weight="bold" fill="#0369a1">Çay B.</text>
+          <text x="48" y="48" font-size="10" fill="#0284c7">→</text>
+          <text x="64" y="42" font-size="18">🥛</text>
+          <text x="65" y="64" font-size="7" font-weight="bold" fill="#0369a1">Su B.</text>
+          <text x="94" y="48" font-size="10" fill="#0284c7">→</text>
+          <text x="110" y="42" font-size="18">🏺</text>
+          <text x="110" y="64" font-size="7" font-weight="bold" fill="#0369a1">Sürahi</text>
+          <text x="138" y="48" font-size="10" fill="#0284c7">→</text>
+          <text x="150" y="42" font-size="18">🪣</text>
+          <text x="151" y="64" font-size="7" font-weight="bold" fill="#0369a1">Güğüm</text>
+          <text x="90" y="88" font-size="7.5" font-weight="bold" fill="#b45309" text-anchor="middle">Kapasite: Küçükten Büyüğe</text>
+        </svg>`;
+      } else if (type === 'conservation') {
+        return `<svg viewBox="0 0 180 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="10" width="164" height="90" rx="8" fill="#fdf4ff" stroke="#c084fc" stroke-width="1.5"/>
+          <text x="35" y="46" font-size="22">🧪</text>
+          <text x="25" y="68" font-size="7.5" font-weight="bold" fill="#6b21a8">Dar Kap (1L)</text>
+          <text x="82" y="48" font-size="16" font-weight="bold" fill="#a855f7">=</text>
+          <text x="115" y="46" font-size="22">🥣</text>
+          <text x="105" y="68" font-size="7.5" font-weight="bold" fill="#6b21a8">Geniş Kap (1L)</text>
+          <text x="90" y="90" font-size="8" font-weight="bold" fill="#581c87" text-anchor="middle">Sıvının Miktarı DEĞİŞMEZ!</text>
+        </svg>`;
+      } else {
+        return `<svg viewBox="0 0 180 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="10" width="164" height="90" rx="8" fill="#fae8ff" stroke="#a855f7" stroke-width="2"/>
+          <text x="90" y="48" font-size="30" text-anchor="middle">👑🐝🍯</text>
+          <text x="90" y="74" font-size="9" font-weight="bold" fill="#7e22ce" text-anchor="middle">KÖTÜ ARI KRALİÇESİ</text>
+          <text x="90" y="90" font-size="7.5" font-weight="bold" fill="#9333ea" text-anchor="middle">1 Kova = 6 Sürahi | 1 Sürahi = 4 Kavanoz</text>
+        </svg>`;
+      }
+    }
+
+    // YEŞİLÇAM & MEB MÜFREDATINA UYGUN SORULAR (ORTA VE ZOR SEVİYELER)
+    const yesilcamRunQuestions = [
+      {
+        question: "⛲ 1. KONTROL KAPISI (180m): Bakkal Rıza Amca mahalle çeşmesinden limonata hazırlıyor.\n1 sürahi limonata = tam 5 su bardağı dolduruyor.\n\nSoru: Rıza Amca 4 SÜRAHİ limonatayı bardaklara paylaştırırsa kaç bardak dolar?",
+        difficulty: "orta",
+        shapeType: "liquid_cups",
+        netTitle: "Sıvı Ölçme Kapları ve Kat Hesabı",
+        netDesc: "1 Sürahi = 5 Bardak. 4 sürahi için 5'er 5'er sayarak kat hesabı yapılır.",
+        netTags: ["Standart Olmayan Ölçme", "Kapasite", "Kat Hesabı"],
+        options: ["15 Bardak", "20 Bardak", "25 Bardak"],
+        correct: 1,
+        hint: "5'er 5'er 4 kere say: 5, 10, 15, 20! Tam 20 bardak!",
+        feedback: "Helal olsun Asil Emin! 4 sürahi x 5 bardak = 20 bardak limonata eder!"
+      },
+      {
+        question: "📦 2. KONTROL KAPISI (360m): Asil Emin yukarıdaki açınımı katlayarak bir hediye kutusu yapıyor.\n\nSoru: Bir küpün açınımında birbirine EŞİT KAÇ TANE KARESAL YÜZ vardır ve küpün kaç köşesi bulunur?",
+        difficulty: "orta",
+        shapeType: "cube",
+        netTitle: "Küp Açınımı (6 Eş Kare Yüz)",
+        netDesc: "Tüm yüzleri birbirine eşit 6 kareden oluşur. Katlandığında küp meydana gelir.",
+        netTags: ["6 Eş Kare Yüz", "8 Köşe", "12 Ayrıt"],
+        options: ["4 Kare Yüz ve 6 Köşe", "6 Eş Kare Yüz ve 8 Köşe", "8 Kare Yüz ve 12 Köşe"],
+        correct: 1,
+        hint: "Küpün zarı düşün! Üstünde 1'den 6'ya kadar 6 yüzü vardır ve 8 köşesi bulunur.",
+        feedback: "Harika Asil Emin! Küpün 6 eş karesel yüzü ve 8 köşesi vardır!"
+      },
+      {
+        question: "🏢 3. KONTROL KAPISI (540m): Açınımı verilen kare prizma şeklindeki ahşap meyve kasasını incele!\n\nSoru: Kare prizmanın açınımında HANGİ GEOMETRİK ŞEKİLLER yer alır?",
+        difficulty: "orta",
+        shapeType: "square_prism",
+        netTitle: "Kare Prizma Açınımı (2 Kare Taban + 4 Dikdörtgen)",
+        netDesc: "Alt ve üst tabanı kare, 4 yan yüzeyi ise birbirine eşit dikdörtgenlerdir.",
+        netTags: ["2 Kare Taban", "4 Eş Dikdörtgen", "8 Köşe", "12 Ayrıt"],
+        options: ["2 Kare Taban ve 4 Eş Dikdörtgen", "6 Eş Kare", "2 Üçgen ve 3 Dikdörtgen"],
+        correct: 0,
+        hint: "Alt ve üst yüzü kare, etrafındaki 4 yüzü ise dikdörtgendir!",
+        feedback: "Usta matematikçi cevabı! Kare prizmanın 2 kare tabanı ve 4 dikdörtgen yan yüzü vardır!"
+      },
+      {
+        question: "🛢️ 4. KONTROL KAPISI (720m): Mahallenin silindir su deposunun açınımını incele!\n\nSoru: Silindirin açınımında hangi şekiller bulunur ve silindirin kaç köşesi vardır?",
+        difficulty: "zor",
+        shapeType: "cylinder",
+        netTitle: "Silindir Açınımı (2 Daire + 1 Dikdörtgen)",
+        netDesc: "2 dairesel tabanı ve açıldığında dikdörtgen olan eğri yüzeyi vardır.",
+        netTags: ["2 Daire Taban", "1 Açılmış Dikdörtgen", "Köşesi YOKTUR", "Ayrıtı YOKTUR"],
+        options: ["2 Daire ve 1 Dikdörtgen; Köşesi YOKTUR", "2 Daire ve 2 Kare; 4 Köşesi vardır", "1 Daire ve 1 Dikdörtgen; 2 Köşesi vardır"],
+        correct: 0,
+        hint: "Silindirin tabanları dairedir, açılmış yan yüzeyi dikdörtgendir. Köşesi ve ayrıtı hiç yoktur!",
+        feedback: "Tebrikler Asil Emin! Silindirin 2 dairesel tabanı ve 1 dikdörtgeni vardır, köşesi ve ayrıtı yoktur!"
+      },
+      {
+        question: "🔬 5. KONTROL KAPISI (860m): Badi Steve dar uzun bir şişedeki 1 litre suyu yayvan geniş bir kaba boşaltıyor. 'Su seviyesi alçaldı, su azaldı!' diyor.\n\nSoru: MEB 2. Sınıf kurallarına göre doğru olan hangisidir?",
+        difficulty: "zor",
+        shapeType: "conservation",
+        netTitle: "Sıvı Miktarı Korunum İlkesi (MEB Maarif)",
+        netDesc: "Kap şekli veya yüksekliği değişse de içerisindeki 1 litrelik sıvı miktarı değişmez.",
+        netTags: ["Sıvı Korunumu", "Gerçek Miktar Sabit", "MEB Temel İlke"],
+        options: ["Geniş kaba konunca sıvının miktarı azalır", "Sıvı ölçme kabı değişse de sıvının gerçek miktarı ASLA DEĞİŞMEZ", "Dar kapta her zaman daha çok sıvı vardır"],
+        correct: 1,
+        hint: "Sıvıyı başka kaba aktarmak miktarını değiştirmez; sadece kabın şeklini alır!",
+        feedback: "İşte MEB Maarif Şampiyonu! Sıvının kabı değişse de miktarı asla değişmez!"
+      },
+      {
+        question: "👑 6. BÜYÜK DÜELLO (930m - AŞAMA 1): SÜPER AYI ARI KRALİÇESİ TACINI PARLATARAK VIZILDADI:\n'Büyülü kovanımı altın bala dönüştürmek için iki aşamalı problemimi çöz Asil Emin!\n• 1 büyük kova temiz su = 6 sürahi su alıyor.\n• 1 sürahi su = 4 kavanoz su dolduruyor.\n• Ayrıca yarım kova suyumuz daha var!\n\nSoru: Toplam 1 BUÇUK KOVA (1 tam kova + yarım kova) su KAÇ KAVANOZ eder?!'",
+        difficulty: "zor",
+        shapeType: "queen_bee",
+        netTitle: "Arı Kraliçesi'nin Kovan Dönüşüm Hesabı",
+        netDesc: "1 Kova = 6 Sürahi | 1 Sürahi = 4 Kavanoz | Yarım Kova = 12 Kavanoz",
+        netTags: ["Çok Aşamalı Problem", "Yarım Kova Hesabı", "Altın Kupa"],
+        options: ["24 Kavanoz", "36 Kavanoz", "48 Kavanoz"],
+        correct: 1,
+        hint: "1 kova = 6 x 4 = 24 kavanoz. Yarım kova = 12 kavanoz. Toplam 24 + 12 = 36 kavanoz!",
+        feedback: "👑 VIZZZ! Kraliçe'nin kovan bilmecesi çözüldü! 1 Kova = 24 kavanoz, yarım kova = 12 kavanoz, toplam 36 kavanoz! Kovan pırıl pırıl tatlı altın bala dönüştü!"
+      },
+      {
+        question: "👑 KÖTÜ KRALİÇE'NİN SON FİNAL SORUSU (AŞAMA 2): Kraliçe altın kupayı uzatmadan önce sordu:\n'Kanatları 2 üçgen ve 3 dikdörtgenden oluşan, 6 köşesi ve 9 ayrıtı olan geometrik cisim hangisidir?!'",
+        difficulty: "zor",
+        shapeType: "tri_prism",
+        netTitle: "Üçgen Prizma Açınımı (2 Üçgen Taban + 3 Dikdörtgen)",
+        netDesc: "2 tabanı üçgen, 3 yan yüzeyi ise dikdörtgensel bölgelerden oluşur.",
+        netTags: ["2 Üçgen Taban", "3 Dikdörtgen", "6 Köşe", "9 Ayrıt"],
+        options: ["Üçgen Prizma", "Kare Prizma", "Silindir"],
+        correct: 0,
+        hint: "2 tabanı üçgen olduğuna göre üçgen prizmadır!",
+        feedback: "🏆 EFSANEVİ ŞAMPİYON ASİL EMİN! Üçgen prizma ile tüm etaplar tamamlandı! 1000m finişine koş ve Altın Kupayı kaldır!"
+      }
+    ];
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const avatarImg = new Image();
+    avatarImg.src = 'hero_avatar.jpg';
+
+    let isRunning = false;
+    let isPaused = false;
+    let distance = 0;
+    const maxDistance = 1000;
+    let score = 0;
+    let drops = 0;
+    let jokersUsedCount = 0;
+    let speed = 5.2;
+    const baseSpeed = 5.2;
+    let checkpointIdx = 0;
+    const checkDists = [180, 360, 540, 720, 860, 930];
+
+    // Boss State
+    let bossHp = 100;
+    let bossDefeated = false;
+    let bossActive = false;
+    let bossAnimTimer = 0;
+
+    // Lanes & Characters
+    const lanes = [220, 300, 380];
+    let pLane = 1;
+    let pY = lanes[1], targetY = lanes[1];
+    let pX = 140, jumpY = 0, jumpVel = 0, isJumping = false;
+
+    let steveX = 80, steveY = lanes[1], steveBonus = 0;
+
+    // Collectibles & Gameplay Elements
+    let itemsList = [];
+    let obstaclesList = [];
+    let popupsList = [];
+    let spawnTimer = 0;
+    let magnetTimer = 0;
+    let comboCount = 0;
+    let comboTimer = 0;
+    let runFrame = 0;
+
+    // Question & Joker Session State
+    let currentQuestionIdx = 0;
+    let currentEliminated = [];
+    let currentHintShown = false;
+
+    function updateBossHud() {
+      const hud = document.getElementById('runnerBossHud');
+      const fill = document.getElementById('runnerBossFill');
+      if (!bossDefeated && (bossActive || distance >= 840)) {
+        hud.style.display = 'flex';
+        fill.style.width = Math.max(0, bossHp) + '%';
+      } else {
+        hud.style.display = 'none';
+      }
+    }
+
+    function updateHudAndModalScores() {
+      document.getElementById('hudDistance').textContent = Math.floor(distance);
+      document.getElementById('hudDrops').textContent = drops;
+      document.getElementById('hudScore').textContent = score;
+
+      const availJokers = Math.floor(score / 30);
+      document.getElementById('hudJokers').textContent = availJokers;
+
+      const pb = document.getElementById('runnerProgressBar');
+      if (pb) pb.style.width = Math.min(100, (distance / maxDistance) * 100) + '%';
+
+      const ms = document.getElementById('cpModalScore');
+      if (ms) ms.textContent = score;
+      const mj = document.getElementById('cpModalJokers');
+      if (mj) mj.textContent = availJokers;
+    }
+
+    function moveLane(d) {
+      if (!isRunning || isPaused) return;
+      if (d === 'up' && pLane > 0) { pLane--; targetY = lanes[pLane]; sound.beep(280); }
+      if (d === 'down' && pLane < 2) { pLane++; targetY = lanes[pLane]; sound.beep(220); }
+    }
+
+    function jump() {
+      if (!isRunning || isPaused || isJumping) return;
+      isJumping = true; jumpVel = -13; sound.beep(420, 0.15);
+    }
+
+    function doPartyPrank() {
+      if (!isRunning) return;
+      sound.playHababam();
+      steveBonus = -40;
+      const banner = document.getElementById('runnerPrankBanner');
+      if (distance >= 840 && !bossDefeated) {
+        sound.queenBeeBuzz();
+        bossHp = Math.max(15, bossHp - 25);
+        updateBossHud();
+        banner.innerHTML = `🎈 NEŞELİ ŞENLİK! Asil Emin dostluk melodisi çaldı! Arı Kraliçesi gülümsedi: "VIZZZZ! Ne tatlı bir melodi!" 👑🐝✨`;
+      } else {
+        banner.innerHTML = `🎉 YAŞASIN! Asil Emin neşeli şenlik balonlarını uçurdu! Badi Steve: "Harikasın Asil Emin!" 🎈✨`;
+      }
+      banner.style.display = 'block';
+      setTimeout(() => banner.style.display = 'none', 2400);
+    }
+
+    document.getElementById('btnPrank').addEventListener('click', doPartyPrank);
+    document.getElementById('btnUpLane').addEventListener('click', () => moveLane('up'));
+    document.getElementById('btnDownLane').addEventListener('click', () => moveLane('down'));
+    document.getElementById('btnJump').addEventListener('click', jump);
+    document.getElementById('soundToggle').addEventListener('click', () => {
+      sound.enabled = !sound.enabled;
+      if (sound.enabled) sound.playHababam();
+      document.getElementById('soundToggle').textContent = sound.enabled ? '🔊' : '🔇';
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'w' || e.key === 'ArrowUp') moveLane('up');
+      if (e.key === 's' || e.key === 'ArrowDown') moveLane('down');
+      if (e.key === ' ') jump();
+      if (e.key === 'q' || e.key === 'Q') doPartyPrank();
+    });
+
+    document.getElementById('startRaceBtn').addEventListener('click', () => {
+      sound.playHababam();
+      document.getElementById('startOverlay').classList.add('hidden');
+      distance = 0; score = 0; drops = 0; checkpointIdx = 0;
+      jokersUsedCount = 0;
+      itemsList = []; obstaclesList = []; popupsList = [];
+      bossHp = 100; bossDefeated = false; bossActive = false;
+      updateBossHud();
+      updateHudAndModalScores();
+      isRunning = true;
+    });
+
+    // SPAWNING SYSTEM FOR A LOT MORE RUNNER POINTS & EXCITING ITEMS
+    function spawnWave() {
+      const startX = canvas.width + 50;
+      const pattern = Math.floor(Math.random() * 6);
+      const lane = Math.floor(Math.random() * 3);
+
+      if (pattern === 0 || pattern === 1) {
+        // Line of Stars (⭐ +25) or Drops (💧 +10)
+        const isStar = pattern === 0;
+        const count = 3 + Math.floor(Math.random() * 2);
+        for (let i = 0; i < count; i++) {
+          itemsList.push({
+            x: startX + i * 44,
+            y: lanes[lane] - 15,
+            lane: lane,
+            type: isStar ? 'star' : 'drop',
+            val: isStar ? 25 : 10,
+            icon: isStar ? '⭐' : '💧',
+            color: isStar ? '#facc15' : '#38bdf8',
+            isAirborne: false,
+            phase: Math.random() * Math.PI * 2
+          });
+        }
+      } else if (pattern === 2) {
+        // Safe Fun Trampoline Jump Pad & 3 Airborne Stars!
+        const trampX = startX + 70;
+        obstaclesList.push({
+          x: trampX,
+          y: lanes[lane],
+          lane: lane,
+          cleared: false,
+          hit: false
+        });
+        // 3 airborne stars over the trampoline
+        for (let i = 0; i < 3; i++) {
+          const arcY = lanes[lane] - 55 - Math.sin((i / 2) * Math.PI) * 35;
+          itemsList.push({
+            x: trampX - 44 + i * 44,
+            y: arcY,
+            lane: lane,
+            type: 'star',
+            val: 30,
+            icon: '⭐',
+            color: '#fde047',
+            isAirborne: true,
+            phase: 0
+          });
+        }
+      } else if (pattern === 3) {
+        // Golden Honey Pot (🍯 +50) flanked by stars
+        itemsList.push({
+          x: startX + 40,
+          y: lanes[lane] - 15,
+          lane: lane,
+          type: 'honey',
+          val: 50,
+          icon: '🍯',
+          color: '#f59e0b',
+          isAirborne: false,
+          phase: 0
+        });
+        const otherLane = (lane + 1) % 3;
+        itemsList.push({
+          x: startX + 40,
+          y: lanes[otherLane] - 15,
+          lane: otherLane,
+          type: 'star',
+          val: 25,
+          icon: '⭐',
+          color: '#facc15',
+          isAirborne: false,
+          phase: 0
+        });
+      } else if (pattern === 4) {
+        // Fresh Vitamin-Rich Orange (🍊 +75 + Natural Energy Turbo Speed)
+        itemsList.push({
+          x: startX + 30,
+          y: lanes[lane] - 15,
+          lane: lane,
+          type: 'orange',
+          val: 75,
+          icon: '🍊',
+          color: '#ea580c',
+          isAirborne: false,
+          phase: 0
+        });
+      } else if (pattern === 5) {
+        // Super Magnet Powerup (🧲 +40)
+        itemsList.push({
+          x: startX + 30,
+          y: lanes[lane] - 15,
+          lane: lane,
+          type: 'magnet',
+          val: 40,
+          icon: '🧲',
+          color: '#ef4444',
+          isAirborne: false,
+          phase: 0
+        });
+      }
+    }
+
+    // CHECKPOINT MODAL & INTERACTIVE JOKER SYSTEM
+    function triggerModal(idx) {
+      isPaused = true;
+      currentQuestionIdx = idx;
+      currentEliminated = [];
+      currentHintShown = false;
+
+      if (idx === 5) {
+        bossActive = true;
+        sound.queenBeeBuzz();
+        updateBossHud();
+      }
+      const q = yesilcamRunQuestions[idx];
+      const m = document.getElementById('checkpointModal');
+      document.getElementById('cpQuestion').innerText = q.question;
+
+      // Update difficulty badge
+      const diffEl = document.getElementById('cpDiffBadge');
+      if (diffEl) {
+        diffEl.className = 'cp-diff-badge ' + (q.difficulty === 'zor' ? 'zor' : 'orta');
+        diffEl.textContent = q.difficulty === 'zor' ? '🔴 ZOR SEVİYE' : '🟡 ORTA SEVİYE';
+      }
+
+      // Populate 2D açınım panel
+      const netCard = document.getElementById('cpNetCard');
+      if (q.shapeType) {
+        netCard.style.display = 'block';
+        document.getElementById('cpNetSvgBox').innerHTML = getShapeNetSvg(q.shapeType);
+        document.getElementById('cpNetTitle').textContent = q.netTitle || 'Geometrik Açınım';
+        document.getElementById('cpNetDesc').textContent = q.netDesc || '';
+        const tagsBox = document.getElementById('cpNetTags');
+        tagsBox.innerHTML = '';
+        if (q.netTags && q.netTags.length) {
+          q.netTags.forEach(t => {
+            const span = document.createElement('span');
+            span.className = 'cp-net-tag';
+            span.textContent = t;
+            tagsBox.appendChild(span);
+          });
+        }
+      } else {
+        netCard.style.display = 'none';
+      }
+
+      const opts = document.getElementById('cpOptions');
+      opts.innerHTML = '';
+
+      const fb = document.getElementById('cpFeedback');
+      fb.style.display = 'none';
+
+      const wrongBox = document.getElementById('cpWrongBox');
+      if (wrongBox) wrongBox.style.display = 'none';
+
+      const msgEl = document.getElementById('jokerStatusMsg');
+      if (msgEl) msgEl.style.display = 'none';
+
+      updateHudAndModalScores();
+
+      q.options.forEach((optText, i) => {
+        const b = document.createElement('button');
+        b.className = 'cp-opt-btn';
+        b.id = `cpOptBtn_${i}`;
+        b.innerHTML = `<span style="color:#b45309; font-weight:900;">[${i+1}]</span> ${optText}`;
+        b.onclick = () => answerModal(idx, i);
+        opts.appendChild(b);
+      });
+
+      document.getElementById('cpTimer').textContent = `💡 RAHATÇA DÜŞÜN, ACELE ETME! (SÜRESİZ)`;
+      m.style.display = 'block';
+    }
+
+    function showJokerMsg(text, color = '#0284c7') {
+      const msgEl = document.getElementById('jokerStatusMsg');
+      if (!msgEl) return;
+      msgEl.textContent = text;
+      msgEl.style.color = color;
+      msgEl.style.display = 'block';
+    }
+
+    function useJoker(type) {
+      const q = yesilcamRunQuestions[currentQuestionIdx];
+      const wrongBox = document.getElementById('cpWrongBox');
+
+      if (type === '5050') {
+        const cost = 30;
+        if (score < cost) {
+          showJokerMsg(`⚠️ Yeterli puanın yok (Gereken: ${cost} ⭐, Mevcut: ${score} ⭐). Merak etme, istediğin kadar ücretsiz deneyebilirsin!`, '#b91c1c');
+          return;
+        }
+
+        const candidateWrongIndices = [];
+        q.options.forEach((opt, i) => {
+          if (i !== q.correct && !currentEliminated.includes(i)) {
+            candidateWrongIndices.push(i);
+          }
+        });
+
+        if (candidateWrongIndices.length === 0) {
+          showJokerMsg(`💡 Zaten tüm yanlış şıklar elendi! Sadece doğru şık kaldı!`, '#0284c7');
+          return;
+        }
+
+        const toEliminate = candidateWrongIndices[0];
+        currentEliminated.push(toEliminate);
+        score -= cost;
+        jokersUsedCount++;
+        updateHudAndModalScores();
+        sound.jokerFanfare();
+
+        const btn = document.getElementById(`cpOptBtn_${toEliminate}`);
+        if (btn) {
+          btn.style.opacity = '0.35';
+          btn.style.textDecoration = 'line-through';
+          btn.style.pointerEvents = 'none';
+          btn.style.background = '#f1f5f9';
+          btn.innerHTML += ' ❌ (ELENDİ)';
+        }
+
+        if (wrongBox) wrongBox.style.display = 'none';
+        showJokerMsg(`✨ 30 ⭐ Puan Harcandı! 1 Yanlış şık elendi. Şimdi doğru şıkkı güvenle seçebilirsin!`, '#15803d');
+
+      } else if (type === 'hint') {
+        const cost = 40;
+        if (score < cost) {
+          showJokerMsg(`⚠️ Yeterli puanın yok (Gereken: ${cost} ⭐, Mevcut: ${score} ⭐).`, '#b91c1c');
+          return;
+        }
+        if (currentHintShown) {
+          showJokerMsg(`💡 İpucu zaten gösteriliyor: ${q.hint}`, '#0284c7');
+          return;
+        }
+        score -= cost;
+        jokersUsedCount++;
+        currentHintShown = true;
+        updateHudAndModalScores();
+        sound.beep(520, 0.2);
+        showJokerMsg(`💡 SÜPER AYI İPUCU: ${q.hint}`, '#0369a1');
+
+      } else if (type === 'pass') {
+        const cost = 60;
+        if (score < cost) {
+          showJokerMsg(`⚠️ Yeterli puanın yok (Gereken: ${cost} ⭐, Mevcut: ${score} ⭐).`, '#b91c1c');
+          return;
+        }
+        score -= cost;
+        jokersUsedCount++;
+        updateHudAndModalScores();
+        sound.jokerFanfare();
+        if (wrongBox) wrongBox.style.display = 'none';
+
+        const optButtons = document.querySelectorAll('.cp-opt-btn');
+        optButtons.forEach((b, i) => {
+          b.style.pointerEvents = 'none';
+          if (i === q.correct) {
+            b.style.background = '#dcfce7';
+            b.style.borderColor = '#22c55e';
+            b.style.color = '#15803d';
+            b.innerHTML = `✅ ${b.innerHTML} (JOKERLE ÇÖZÜLDÜ!)`;
+          } else {
+            b.style.opacity = '0.4';
+          }
+        });
+
+        showJokerMsg(`🌟 ŞAMPİYON JOKERİ KULLANILDI! (-60 ⭐) Doğru cevap açıldı ve onaylandı!`, '#15803d');
+
+        setTimeout(() => {
+          answerModal(currentQuestionIdx, q.correct, true);
+        }, 1300);
+      }
+    }
+
+    function retryQuestion() {
+      const wrongBox = document.getElementById('cpWrongBox');
+      if (wrongBox) wrongBox.style.display = 'none';
+      showJokerMsg('💡 İstediğin gibi düşün ve diğer şıklardan birini seç!', '#0284c7');
+    }
+
+    function answerModal(qIdx, chosen, isJokerPass = false) {
+      const q = yesilcamRunQuestions[qIdx];
+      const fb = document.getElementById('cpFeedback');
+      const wrongBox = document.getElementById('cpWrongBox');
+
+      if (chosen === q.correct) {
+        if (wrongBox) wrongBox.style.display = 'none';
+        if (!isJokerPass) {
+          score += 150; // Manual correct bonus
+        }
+        updateHudAndModalScores();
+
+        if (qIdx === 5) {
+          // Boss Phase 1 solved!
+          sound.bossHit();
+          bossHp = 50;
+          updateBossHud();
+          fb.className = 'cp-feedback-banner correct';
+          fb.innerHTML = `🌟 HARİKA ASİL EMİN!<br>${q.feedback}<br>⚡ BİTİRİCİ DARBEYE HAZIRLAN!`;
+          setTimeout(() => {
+            triggerModal(6);
+          }, 2200);
+        } else if (qIdx === 6) {
+          // Boss Phase 2 solved (Queen Bee Defeated/Celebrates)!
+          sound.queenBeeBuzz();
+          sound.playHababam();
+          bossHp = 0;
+          bossDefeated = true;
+          updateBossHud();
+          speed = 9.5;
+          fb.className = 'cp-feedback-banner correct';
+          fb.innerHTML = `🌟 ŞAMPİYON ASİL EMİN!<br>${q.feedback}<br>🚀 1000m FİNİŞ ÇİZGİSİNE COŞKUYLA KOŞ!`;
+          setTimeout(() => {
+            document.getElementById('checkpointModal').style.display = 'none';
+            checkpointIdx++;
+            isPaused = false;
+          }, 2200);
+        } else {
+          // Regular checkpoints 0, 1, 2, 3, 4
+          sound.playHababam();
+          speed = 8.5;
+          steveBonus -= 35;
+          fb.className = 'cp-feedback-banner correct';
+          fb.innerHTML = `🌟 HARİKA ASİL EMİN!<br>${q.feedback} 🚀 TURBO KOŞU HIZI!`;
+
+          setTimeout(() => {
+            document.getElementById('checkpointModal').style.display = 'none';
+            checkpointIdx++;
+            isPaused = false;
+            setTimeout(() => speed = baseSpeed, 2800);
+          }, 1800);
+        }
+      } else {
+        // Wrong Answer Selected!
+        sound.wrongOops();
+        steveBonus += 25;
+
+        const clickedBtn = document.getElementById(`cpOptBtn_${chosen}`);
+        if (clickedBtn) {
+          clickedBtn.style.background = '#fee2e2';
+          clickedBtn.style.borderColor = '#ef4444';
+          clickedBtn.style.color = '#b91c1c';
+        }
+
+        // Show friendly Joker recovery prompt
+        if (wrongBox) wrongBox.style.display = 'block';
+        showJokerMsg(`❌ "${q.options[chosen]}" doğru olmadı Asil Emin. İster puanınla joker kullan, ister ücretsiz tekrar dene!`, '#b91c1c');
+      }
+    }
+
+    // Helper: Draw 5-pointed star
+    function drawStar(c, cx, cy, spikes, outerRadius, innerRadius, fillStyle, strokeStyle) {
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+
+      c.beginPath();
+      c.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        c.lineTo(x, y);
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        c.lineTo(x, y);
+        rot += step;
+      }
+      c.lineTo(cx, cy - outerRadius);
+      c.closePath();
+      c.fillStyle = fillStyle;
+      c.fill();
+      if (strokeStyle) {
+        c.strokeStyle = strokeStyle;
+        c.lineWidth = 1.5;
+        c.stroke();
+      }
+    }
+
+    function loop() {
+      bossAnimTimer += 0.05;
+      runFrame++;
+
+      if (isRunning && !isPaused) {
+        // Distance increment calibrated for ~90 seconds of running excitement across 1000m
+        distance += speed * 0.038;
+        updateHudAndModalScores();
+
+        if (distance >= 840 && !bossDefeated) {
+          updateBossHud();
+        }
+
+        if (checkpointIdx < checkDists.length && distance >= checkDists[checkpointIdx]) {
+          triggerModal(checkpointIdx);
+        } else if (distance >= maxDistance) {
+          // Reached Finish Line at 1000m!
+          isRunning = false;
+          sound.playHababam();
+          document.getElementById('runnerBossHud').style.display = 'none';
+          document.getElementById('vicScore').textContent = score;
+          document.getElementById('vicDrops').textContent = drops;
+          document.getElementById('vicJokers').textContent = jokersUsedCount;
+          document.getElementById('victoryOverlay').classList.remove('hidden');
+        }
+
+        // Magnet Powerup Timer
+        if (magnetTimer > 0) {
+          magnetTimer--;
+        }
+
+        // Combo Timer
+        if (comboTimer > 0) {
+          comboTimer--;
+          if (comboTimer === 0) comboCount = 0;
+        }
+
+        // Player physics
+        pY += (targetY - pY) * 0.2;
+        if (isJumping) {
+          jumpY += jumpVel;
+          jumpVel += 0.8;
+          if (jumpY >= 0) { jumpY = 0; isJumping = false; }
+        }
+
+        // Badi Steve position
+        steveY += (targetY - steveY) * 0.1;
+        const targetSteveX = pX - 35 + steveBonus;
+        steveX += (targetSteveX - steveX) * 0.05;
+        if (steveBonus < 0) steveBonus += 0.15;
+
+        // Wave spawner (every 38 frames = lots of rich collectibles!)
+        spawnTimer++;
+        if (spawnTimer >= 38) {
+          spawnTimer = 0;
+          spawnWave();
+        }
+
+        const ay = pY + jumpY;
+
+        // Update & Collide Items
+        for (let i = itemsList.length - 1; i >= 0; i--) {
+          const item = itemsList[i];
+          item.x -= speed;
+
+          // Magnet Attraction
+          if (magnetTimer > 0) {
+            const dx = pX - item.x;
+            const dy = ay - item.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 320) {
+              item.x += dx * 0.14;
+              item.y += dy * 0.14;
+            }
+          }
+
+          // Check Collection
+          const distToPlayer = Math.hypot(item.x - pX, item.y - (ay - 20));
+          const laneMatch = item.lane === pLane && Math.abs(item.x - pX) < 32;
+          const airborneMatch = item.isAirborne && laneMatch && jumpY < -15;
+          const groundMatch = !item.isAirborne && laneMatch && Math.abs(jumpY) < 30;
+
+          if (distToPlayer < 34 || airborneMatch || groundMatch) {
+            // Collect Item!
+            score += item.val;
+            if (item.type === 'drop') drops++;
+
+            if (item.type === 'orange') {
+              sound.beep(640, 0.2);
+              speed = 7.8;
+              setTimeout(() => speed = baseSpeed, 2500);
+              popupsList.push({ x: pX, y: ay - 35, text: '🍊 TAZE PORTAKAL! C VİTAMİNİ ENERJİSİ! +75', color: '#ea580c', life: 40 });
+            } else if (item.type === 'magnet') {
+              sound.magnetSound();
+              magnetTimer = 360; // 6 seconds magnet
+              popupsList.push({ x: pX, y: ay - 35, text: '🧲 SÜPER MIKNATIS AKTİF!', color: '#ef4444', life: 40 });
+            } else {
+              sound.coinChime(comboCount);
+              popupsList.push({ x: item.x, y: item.y - 15, text: `+${item.val} ${item.icon}`, color: item.color, life: 35 });
+            }
+
+            comboCount++;
+            comboTimer = 55;
+            itemsList.splice(i, 1);
+            continue;
+          }
+
+          if (item.x < -40) itemsList.splice(i, 1);
+        }
+
+        // Update Safe Trampolines (No puddles, no slipping, no hazards!)
+        for (let i = obstaclesList.length - 1; i >= 0; i--) {
+          const obs = obstaclesList[i];
+          obs.x -= speed;
+
+          if (!obs.cleared && !obs.hit && obs.lane === pLane && Math.abs(obs.x - pX) < 26) {
+            if (jumpY < -15) {
+              // Cleared by jumping over!
+              obs.cleared = true;
+              score += 25;
+              sound.beep(640, 0.12);
+              popupsList.push({ x: pX, y: ay - 40, text: '🦘 HARİKA ATLAYIŞ! +25 ⭐', color: '#22c55e', life: 35 });
+            } else {
+              // Fun Trampoline Bounce!
+              obs.hit = true;
+              jumpY = -12;
+              isJumping = true;
+              score += 20;
+              sound.beep(580, 0.15);
+              popupsList.push({ x: pX, y: ay - 40, text: '🎈 NEŞELİ TRAMBOLİN! +20 ⭐', color: '#38bdf8', life: 30 });
+            }
+          }
+
+          if (obs.x < -60) obstaclesList.splice(i, 1);
+        }
+
+        // Update Popups
+        for (let i = popupsList.length - 1; i >= 0; i--) {
+          const p = popupsList[i];
+          p.y -= 1.2;
+          p.life--;
+          if (p.life <= 0) popupsList.splice(i, 1);
+        }
+      }
+
+      // RENDERING SECTION
+      // Bright Sunny Sky & Daylight Atmosphere
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, 180);
+      skyGrad.addColorStop(0, '#38bdf8');
+      skyGrad.addColorStop(0.7, '#7dd3fc');
+      skyGrad.addColorStop(1, '#bae6fd');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, canvas.width, 180);
+
+      // Glowing Sun with Pulsing Corona & Sunbeams
+      const sunX = canvas.width - 100;
+      const sunY = 55;
+      const sunPulse = Math.sin(runFrame * 0.05) * 4;
+
+      // Outer Corona
+      ctx.fillStyle = 'rgba(254, 240, 138, 0.3)';
+      ctx.beginPath(); ctx.arc(sunX, sunY, 56 + sunPulse, 0, Math.PI * 2); ctx.fill();
+
+      // Rotating Sunbeams
+      ctx.save();
+      ctx.translate(sunX, sunY);
+      ctx.rotate(runFrame * 0.01);
+      ctx.strokeStyle = 'rgba(253, 224, 71, 0.4)';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 8; i++) {
+        ctx.rotate(Math.PI / 4);
+        ctx.beginPath();
+        ctx.moveTo(34, 0); ctx.lineTo(52, 0);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Sun Disc
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath(); ctx.arc(sunX, sunY, 34, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath(); ctx.arc(sunX, sunY, 26, 0, Math.PI * 2); ctx.fill();
+
+      // Fluffy White Clouds with Parallax
+      function drawCloud(cx, cy, scale) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 18 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 16 * scale, cy - 8 * scale, 22 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 36 * scale, cy, 18 * scale, 0, Math.PI * 2);
+        ctx.arc(cx + 18 * scale, cy + 8 * scale, 16 * scale, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      const cloud1X = ((distance * 14) % (canvas.width + 160));
+      drawCloud(canvas.width - cloud1X, 45, 1.1);
+      const cloud2X = (((distance * 8) + 380) % (canvas.width + 160));
+      drawCloud(canvas.width - cloud2X, 85, 0.85);
+
+      // Background Yeşilçam Neighborhood Town Skyline (Houses & Trees)
+      const townOffset = (distance * 22) % 240;
+      for (let tx = -townOffset; tx < canvas.width + 100; tx += 120) {
+        // House base
+        ctx.fillStyle = '#fef3c7';
+        ctx.fillRect(tx, 135, 75, 42);
+        // Roof
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.moveTo(tx - 6, 135);
+        ctx.lineTo(tx + 37, 108);
+        ctx.lineTo(tx + 81, 135);
+        ctx.closePath();
+        ctx.fill();
+        // Chimney
+        ctx.fillStyle = '#b91c1c';
+        ctx.fillRect(tx + 50, 112, 10, 16);
+        // Windows
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(tx + 12, 145, 16, 16);
+        ctx.fillRect(tx + 46, 145, 16, 16);
+        ctx.fillStyle = '#bae6fd';
+        ctx.fillRect(tx + 14, 147, 5, 5);
+        ctx.fillRect(tx + 48, 147, 5, 5);
+        // Green Pine Tree beside house
+        ctx.fillStyle = '#15803d';
+        ctx.beginPath();
+        ctx.moveTo(tx + 85, 175);
+        ctx.lineTo(tx + 98, 130);
+        ctx.lineTo(tx + 111, 175);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(tx + 95, 165, 6, 12);
+      }
+
+      // Vibrant Green Grass Meadow Strip
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(0, 170, canvas.width, 18);
+      ctx.fillStyle = '#16a34a';
+      ctx.fillRect(0, 184, canvas.width, 4);
+
+      // Bright Sunlit Cobblestone Road
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(0, 188, canvas.width, canvas.height - 188);
+
+      lanes.forEach(ly => {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.setLineDash([20, 14]);
+        ctx.lineWidth = 3;
+        ctx.strokeRect(0, ly - 20, canvas.width, 40);
+        ctx.setLineDash([]);
+      });
+
+      // Finish Line Banner at ~1000m
+      if (distance >= 930) {
+        const finishX = canvas.width - (1000 - distance) * 12;
+        if (finishX > -50 && finishX < canvas.width + 100) {
+          // Checkered road tape
+          for (let row = 0; row < 6; row++) {
+            for (let col = 0; col < 2; col++) {
+              ctx.fillStyle = (row + col) % 2 === 0 ? '#ffffff' : '#0f172a';
+              ctx.fillRect(finishX + col * 12, 188 + row * 45, 12, 45);
+            }
+          }
+          // Overhead Finish Banner
+          ctx.fillStyle = '#ea580c';
+          ctx.fillRect(finishX - 30, 90, 84, 30);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.fillText('🏁 1000m FİNİŞ', finishX - 25, 110);
+        }
+      }
+
+      // Render Safe Colorful Jump Trampolines (Replaces wet puddles)
+      obstaclesList.forEach(obs => {
+        // Trampoline Outer Ring
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.ellipse(obs.x, obs.y + 6, 26, 9, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#b45309';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        // Bouncy Mat
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.ellipse(obs.x, obs.y + 6, 20, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // Star on mat
+        ctx.fillStyle = '#fef08a';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('⭐', obs.x, obs.y + 10);
+        ctx.textAlign = 'left';
+      });
+
+      // Render Collectibles (Items)
+      itemsList.forEach(d => {
+        const bob = Math.sin(runFrame * 0.15 + (d.phase || 0)) * 4;
+        const iy = d.y + bob;
+
+        if (d.type === 'drop') {
+          // Water Droplet
+          ctx.fillStyle = '#0284c7';
+          ctx.beginPath();
+          ctx.arc(d.x, iy, 9, 0, Math.PI);
+          ctx.lineTo(d.x, iy - 14);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#7dd3fc';
+          ctx.beginPath(); ctx.arc(d.x - 3, iy - 2, 3, 0, Math.PI * 2); ctx.fill();
+        } else if (d.type === 'star') {
+          // Golden Star
+          drawStar(ctx, d.x, iy, 5, 13, 6, '#facc15', '#ca8a04');
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.beginPath(); ctx.arc(d.x - 3, iy - 3, 2.5, 0, Math.PI * 2); ctx.fill();
+        } else if (d.type === 'honey') {
+          // Golden Honey
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath(); ctx.arc(d.x, iy, 13, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath(); ctx.arc(d.x - 4, iy - 4, 4, 0, Math.PI * 2); ctx.fill();
+          ctx.font = 'bold 15px sans-serif';
+          ctx.fillText('🍯', d.x - 9, iy + 6);
+        } else if (d.type === 'orange') {
+          // Fresh Orange Fruit (Healthy Vitamin)
+          ctx.font = 'bold 20px sans-serif';
+          ctx.fillText('🍊', d.x - 10, iy + 8);
+        } else if (d.type === 'magnet') {
+          // Magnet
+          ctx.font = 'bold 20px sans-serif';
+          ctx.fillText('🧲', d.x - 10, iy + 8);
+        }
+      });
+
+      // Badi Steve in Yeşilçam Kasket & Running Legs
+      const sLeg = Math.sin(runFrame * 0.4) * 6;
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(steveX - 10, steveY - 24, 20, 20);
+      // Legs
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(steveX - 8, steveY - 4, 6, 8 + sLeg);
+      ctx.fillRect(steveX + 2, steveY - 4, 6, 8 - sLeg);
+      // Head
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(steveX - 9, steveY - 40, 18, 16);
+      // Kasket
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(steveX - 12, steveY - 48, 24, 8);
+
+      // BOSS RENDERING (SÜPER AYI ARI KRALİÇESİ)
+      if (distance >= 830 && !bossDefeated) {
+        const bossX = Math.max(canvas.width - 180, canvas.width - (distance - 830) * 6);
+        const bossY = lanes[1] - 30 + Math.sin(bossAnimTimer * 5) * 12;
+
+        // Shadow on road
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.beginPath(); ctx.ellipse(bossX, lanes[1] + 35, 48, 14, 0, 0, Math.PI * 2); ctx.fill();
+
+        // Büyülü Honeycomb Base
+        ctx.fillStyle = '#7e22ce';
+        ctx.beginPath(); ctx.arc(bossX - 40, bossY + 40, 16, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#9333ea';
+        ctx.beginPath(); ctx.arc(bossX, bossY + 44, 20, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#c084fc';
+        ctx.beginPath(); ctx.arc(bossX + 40, bossY + 40, 16, 0, Math.PI * 2); ctx.fill();
+
+        // Translucent Glowing Violet Wings
+        const flap = Math.sin(bossAnimTimer * 26) * 12;
+        ctx.fillStyle = 'rgba(216, 180, 254, 0.8)';
+        ctx.strokeStyle = '#c084fc';
+        ctx.lineWidth = 2;
+        // Left Wing
+        ctx.beginPath();
+        ctx.ellipse(bossX - 36, bossY - 22 + flap, 34, 15, -0.35, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+        // Right Wing
+        ctx.beginPath();
+        ctx.ellipse(bossX + 36, bossY - 22 - flap, 34, 15, 0.35, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+
+        // Cute Rounded Bee Abdomen Tip (No sharp stinger)
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.arc(bossX, bossY + 26, 8, 0, Math.PI);
+        ctx.fill();
+
+        // Corrupted Striped Abdomen (Deep Purple & Obsidian Black Bands)
+        ctx.fillStyle = '#7e22ce';
+        ctx.beginPath(); ctx.roundRect(bossX - 32, bossY - 15, 64, 42, 20); ctx.fill();
+
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(bossX - 30, bossY - 6, 60, 9);
+        ctx.fillRect(bossX - 28, bossY + 8, 56, 9);
+
+        // Corrupted Dark Violet Collar
+        ctx.fillStyle = '#581c87';
+        ctx.beginPath(); ctx.roundRect(bossX - 26, bossY - 28, 52, 16, 8); ctx.fill();
+
+        // Evil Queen Bee Head
+        ctx.fillStyle = '#6b21a8';
+        ctx.beginPath(); ctx.roundRect(bossX - 22, bossY - 54, 44, 30, 12); ctx.fill();
+
+        // Fierce Glowing Red Evil Eyes
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath(); ctx.ellipse(bossX - 11, bossY - 40, 7, 10, -0.1, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(bossX + 11, bossY - 40, 7, 10, 0.1, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(bossX - 12, bossY - 43, 2.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(bossX + 10, bossY - 43, 2.5, 0, Math.PI * 2); ctx.fill();
+
+        // Dark Purple Cheeks
+        ctx.fillStyle = '#a855f7';
+        ctx.beginPath(); ctx.arc(bossX - 17, bossY - 33, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(bossX + 17, bossY - 33, 4, 0, Math.PI * 2); ctx.fill();
+
+        // Antennae
+        ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(bossX - 8, bossY - 54); ctx.quadraticCurveTo(bossX - 16, bossY - 70, bossX - 12, bossY - 74); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(bossX + 8, bossY - 54); ctx.quadraticCurveTo(bossX + 16, bossY - 70, bossX + 12, bossY - 74); ctx.stroke();
+        ctx.fillStyle = '#c084fc';
+        ctx.beginPath(); ctx.arc(bossX - 12, bossY - 74, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(bossX + 12, bossY - 74, 4, 0, Math.PI * 2); ctx.fill();
+
+        // Spiky Amethyst Crown
+        ctx.fillStyle = '#b45309';
+        ctx.beginPath();
+        ctx.moveTo(bossX - 18, bossY - 54);
+        ctx.lineTo(bossX + 18, bossY - 54);
+        ctx.lineTo(bossX + 22, bossY - 70);
+        ctx.lineTo(bossX + 11, bossY - 61);
+        ctx.lineTo(bossX, bossY - 74);
+        ctx.lineTo(bossX - 11, bossY - 61);
+        ctx.lineTo(bossX - 22, bossY - 70);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#c084fc';
+        ctx.beginPath(); ctx.arc(bossX, bossY - 64, 3.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(bossX - 13, bossY - 60, 2.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(bossX + 13, bossY - 60, 2.5, 0, Math.PI * 2); ctx.fill();
+
+        // Floating In-Canvas HP Bar
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.fillRect(bossX - 55, bossY - 88, 110, 11);
+        ctx.fillStyle = bossHp > 40 ? '#9333ea' : '#ef4444';
+        ctx.fillRect(bossX - 54, bossY - 87, 108 * (bossHp / 100), 9);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('👑 SÜPER AYI ARI KRALİÇESİ', bossX, bossY - 92);
+        ctx.textAlign = 'left';
+      }
+
+      // Asil Emin in Vest, Red Cape & Animated Running Feet
+      const ay = pY + jumpY;
+
+      // Magnet Shield Glowing Ring
+      if (magnetTimer > 0) {
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(pX, ay - 30, 36 + Math.sin(runFrame * 0.2) * 3, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Red Cape waving behind
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.moveTo(pX - 10, ay - 22);
+      ctx.lineTo(pX - 22, ay - 14 + Math.sin(bossAnimTimer * 15) * 5);
+      ctx.lineTo(pX - 20, ay - 4 + Math.sin(bossAnimTimer * 15) * 5);
+      ctx.lineTo(pX - 8, ay - 8);
+      ctx.closePath();
+      ctx.fill();
+
+      // Green vest body
+      ctx.fillStyle = '#16a34a';
+      ctx.fillRect(pX - 11, ay - 24, 22, 20);
+
+      // Running Feet
+      const pLeg = isJumping ? -8 : Math.sin(runFrame * 0.4) * 8;
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(pX - 8, ay - 4, 7, 8 + pLeg);
+      ctx.fillRect(pX + 1, ay - 4, 7, 8 - pLeg);
+      // Red sneakers
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(pX - 10, ay + 4 + pLeg, 9, 5);
+      ctx.fillRect(pX - 1, ay + 4 - pLeg, 9, 5);
+
+      // Avatar Face Circle with Gold Border
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(pX, ay - 42, 20, 0, Math.PI * 2);
+      ctx.clip();
+      if (avatarImg.complete) ctx.drawImage(avatarImg, pX - 20, ay - 62, 40, 40);
+      else { ctx.fillStyle = '#ffd54f'; ctx.fill(); }
+      ctx.restore();
+
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(pX, ay - 42, 20, 0, Math.PI * 2); ctx.stroke();
+
+      // Floating Score / Event Popups
+      popupsList.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, p.life / 20);
+        ctx.fillStyle = p.color;
+        ctx.font = 'bold 15px sans-serif';
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 3;
+        ctx.strokeText(p.text, p.x, p.y);
+        ctx.fillText(p.text, p.x, p.y);
+        ctx.restore();
+      });
+
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>

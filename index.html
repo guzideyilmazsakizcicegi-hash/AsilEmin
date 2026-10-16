@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asil Emin: Süper Ayı Kötü Arı Kraliçesi & Aydınlık Macera!</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Luckiest+Guy&family=Fredoka:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: radial-gradient(circle at top, #7dd3fc 0%, #38bdf8 35%, #bae6fd 70%, #fef08a 100%);
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .launcher-container {
+      width: 100%;
+      max-width: 940px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 6px solid #0284c7;
+      border-radius: 28px;
+      box-shadow: 0 20px 50px rgba(2, 132, 199, 0.25), 0 0 35px rgba(56, 189, 248, 0.35);
+      padding: 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-banner-wrap {
+      max-width: 580px;
+      width: 100%;
+      margin: 0 auto 16px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 5px solid #0284c7;
+      box-shadow: 0 10px 30px rgba(2, 132, 199, 0.3);
+    }
+    .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+
+    .portal-title {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 2.2rem;
+      color: #0369a1;
+      text-shadow: 2px 2px 0 #bae6fd;
+      margin-bottom: 6px;
+    }
+
+    .portal-subtitle {
+      font-size: 1.1rem;
+      color: #334155;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .student-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: #f0f9ff;
+      border: 3px solid #38bdf8;
+      padding: 8px 24px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+    }
+
+    .student-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 3px solid #f59e0b;
+      overflow: hidden;
+      background: #fff;
+    }
+    .student-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .student-text h3 { font-size: 1.3rem; color: #0369a1; text-align: left; }
+    .student-text p { font-size: 0.85rem; color: #0284c7; text-align: left; font-weight: 700; }
+
+    /* EVIL QUEEN ALERT BANNER */
+    .evil-queen-banner {
+      background: linear-gradient(90deg, #fdf4ff 0%, #fae8ff 50%, #f0f9ff 100%);
+      border: 3px solid #c084fc;
+      border-radius: 18px;
+      padding: 12px 20px;
+      margin: 0 auto 20px;
+      max-width: 740px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: #581c87;
+      font-weight: 700;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.18);
+    }
+
+    .game-modes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .mode-card {
+      background: #ffffff;
+      border: 4px solid #bae6fd;
+      border-radius: 20px;
+      padding: 22px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    .mode-card.featured {
+      border-color: #0284c7;
+      background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+      box-shadow: 0 8px 25px rgba(2, 132, 199, 0.25);
+    }
+
+    .mode-card.classic {
+      border-color: #38bdf8;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .mode-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(2, 132, 199, 0.2); }
+
+    .mode-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.65rem;
+      padding: 5px 12px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .mode-card.featured .mode-badge { background: #0284c7; color: #ffffff; }
+    .mode-card.classic .mode-badge { background: #0284c7; color: #ffffff; }
+
+    .mode-card h2 { font-size: 1.4rem; font-weight: 800; color: #0369a1; margin-bottom: 8px; }
+    .mode-card p { font-size: 0.95rem; color: #334155; line-height: 1.5; margin-bottom: 14px; }
+
+    .mode-features-list { list-style: none; font-size: 0.88rem; color: #1e293b; margin-bottom: 20px; }
+    .mode-features-list li { margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+
+    .btn-launch {
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 1.35rem;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 14px;
+      color: white;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+    }
+    .btn-launch.blue { background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%); box-shadow: 0 6px 0 #075985; }
+    .btn-launch.orange { background: linear-gradient(180deg, #ea580c 0%, #c2410c 100%); box-shadow: 0 6px 0 #9a3412; }
+    .btn-launch:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+
+    @media (max-width: 640px) {
+      .game-modes-grid { grid-template-columns: 1fr; }
+      .portal-title { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="launcher-container">
+    <div class="hero-banner-wrap">
+      <img src="evil_queen_bright_cover.jpg" alt="Asil Emin ve Süper Ayı Kötü Arı Kraliçesi Macerası">
+    </div>
+
+    <h1 class="portal-title">ASİL EMİN: SÜPER AYI KÖTÜ ARI KRALİÇESİ & AYDINLIK MACERA!</h1>
+    <p class="portal-subtitle">☀️ Pırıl Pırıl Aydınlık Yeşilçam Dünyası • Başrollerde: Asil Emin Sakızçiçeği, Badi Steve & Kötü Arı Kraliçesi 🐝✨</p>
+
+    <!-- EVIL QUEEN ALERT BANNER -->
+    <div class="evil-queen-banner">
+      <span style="font-size: 1.6rem;">👑💜🐝</span>
+      <span><strong>SÜPER AYI ARI KRALİÇESİ:</strong> Finişte ametist taçlı, büyülü kovanıyla <strong>Arı Kraliçesi</strong> bekliyor! Sıvı ölçme dâhinle kovanın bilmecelerini çöz, kovanı pırıl pırıl altın bala dönüştür! ☀️🍯</span>
+    </div>
+
+    <div class="student-badge">
+      <div class="student-avatar">
+        <img src="hero_avatar.jpg" alt="Asil Emin">
+      </div>
+      <div class="student-text">
+        <h3>Asil Emin Sakızçiçeği</h3>
+        <p>Süper Ayı & Yeşilçam Başrol Şampiyonu 🏆</p>
+      </div>
+    </div>
+
+    <div class="game-modes-grid">
+      <!-- MODE 1: 3D MINECRAFT BRIGHT & EVIL QUEEN -->
+      <div class="mode-card featured">
+        <div>
+          <span class="mode-badge">☀️ 3D AYDINLIK DÜNYA & SÜPER AYI</span>
+          <h2>🧱 3D Mahalle & Arı Kraliçesi Düellosu</h2>
+          <p>
+            Pırıl pırıl masmavi gökyüzü, güneşli sokaklar, tarihi taş çeşme ve <strong>Z=49'daki Ametist Taçlı Arı Kraliçesi!</strong>
+            Kraliçeye neşeli dostluk şarkısı çal, 36 kavanozluk sıvı bilmecesini çöz ve kovanı altın bala dönüştür!
+          </p>
+          <ul class="mode-features-list">
+            <li>✅ ☀️ Pırıl pırıl aydınlık gündüz atmosferi & parlak güneş ışığı</li>
+            <li>✅ 📐 3D Geometrik Prizmalara Dokununca Açılan 2D Yüzey Açınımları (Küp, Kare, Dikdörtgen, Üçgen Prizma, Silindir)</li>
+            <li>✅ 🟡🔴 MEB Müfredatına Uygun Orta ve Zor Seviye Sorular & Sıvı Korunumu Kanunu</li>
+            <li>✅ 👑 Süper Ayı Arı Kraliçesi (Büyülü Kristal Kovan, Ametist Taç & Tatlı Melodi)</li>
+            <li>✅ 💡 Süre Sınırı Yok! Kendi Hızında Rahatça Düşün</li>
+            <li>✅ 🎺 Hababam Sınıfı Neşeli Melodisi & Şenlik Coşkusu!</li>
+          </ul>
+        </div>
+        <a href="minecraft_3d.html" class="btn-launch blue">
+          ☀️ 3D AYDINLIK DÜNYAYA BAŞLA!
+        </a>
+      </div>
+
+      <!-- MODE 2: 2D RUNNER BRIGHT & EVIL QUEEN -->
+      <div class="mode-card classic">
+        <div>
+          <span class="mode-badge">🏃 1000m AYDINLIK SOKAK KOŞUSU & BOL PUAN</span>
+          <h2>⚡ 2D Güneşli Sokak & Petek Düellosu</h2>
+          <p>
+            Güneşli gökyüzü altında Badi Steve ile 1000 metre koş!
+            Yıldızları, damlaları, altın balları ve taze meyveleri topla, bol bol puan kazan!
+            Sorularda takılırsan puanlarını <strong>JOKER</strong> olarak kullan ve Arı Kraliçesi'nin bilmecelerini çöz!
+          </p>
+          <ul class="mode-features-list">
+            <li>✅ 🏃 1000 Metrelik Uzun ve Eğlenceli Aydınlık Koşu Parkuru</li>
+            <li>✅ ⭐ Bol Puanlı Parkur (Yıldızlar, Damlalar, Bal & Süper Mıknatıs)</li>
+            <li>✅ 🃏 Yanlış Cevaplarda Puanla Kullanılan Kurtarıcı Jokerler!</li>
+            <li>✅ 📐 Kapılarda 2D Cisim Açınımları ve MEB Orta/Zor Sıvı Soruları</li>
+            <li>✅ 👑 930m Arı Kraliçesi Can Barı & İki Aşamalı Düello</li>
+          </ul>
+        </div>
+        <a href="kosucu_oyunu.html" class="btn-launch orange">
+          🚀 GÜNEŞLİ KOŞUYA BAŞLA!
+        </a>
+      </div>
+    </div>
+
+    <div style="font-size: 0.88rem; color: #0284c7; font-weight: 700;">
+      💡 Her iki oyun da <strong>.html</strong> uzantılıdır, internetsiz çalışır ve Asil Emin'in kendi fotoğrafıyla kişiselleştirilmiştir!
+    </div>
+  </div>
+
+</body>
+</html>
